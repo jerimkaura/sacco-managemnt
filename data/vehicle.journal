@@ -1,0 +1,17 @@
+created(1608724625.8523984).
+assert(vehicle(123,klp_923c,toyota,modl,2020)).
+assert(bus_stop(nairobi)).
+assert(bus_stop(nakuru)).
+assert(plies(klp_923c,nairobi,nakuru)).
+assert(driver(455,john,doe,12323123123)).
+assert(drives(455,klp_923c)).
+assert(vehicle(123,kqw_poi0,toyota,qwee,2020)).
+assert(bus_stop(nairobi)).
+assert(bus_stop(eldoret)).
+assert(plies(kqw_poi0,nairobi,eldoret)).
+assert(driver(21122,jane,doe,71111)).
+assert(drives(21122,kqw_poi0)).
+retract(vehicle(123,klp_923c,toyota,modl,2020)).
+retract(drives(455,klp_923c)).
+retract(driver(455,john,doe,12323123123)).
+retract(plies(klp_923c,nairobi,nakuru)).

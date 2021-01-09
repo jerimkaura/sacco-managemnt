@@ -1,41 +1,49 @@
-read_members :-
-    csv_read_file('members.csv', Rows, [functor(vehicle), arity(5)]),
-    maplist(assert, Rows).
+% SWI-Prolog implementation
 
-add_member:-
-    findall(row(ID, FNAME, LNAME,SHARES,LOAN_STATUS),    member(ID, FNAME, LNAME, SHARES, LOAN_STATUS), Rows),
-    csv_write_file('members.csv', Rows).
+:- module(member, [register_member/0,list_members/0,search_member/0,delete_member/0]).
 
-register_member:-
-    format("\nEnter member ID Number:\n"),
+:- use_module(library(persistency)).
+:- use_module(vehicle).
+
+% Use persistent library to save data persistently
+:- persistent
+    member(id:integer, fname:atom, lname:atom).
+
+% File to save data in
+:- db_attach('data/member.journal', []).
+
+% Saves a Sacco Member to the database (and persistent journal file file)
+save_member(ID, FName, LName) :-
+    assert_member(ID, FName, LName).
+
+% Read user input on member details and save it
+register_member :-
+    format("\nEnter member ID number:\n"),
     read(ID),
-    format("Enter Member's Fisrt Name:\n"),
-    read(FNAME),
-    format("Enter Member's  Last Name:\n"),
-    read(LNAME),
-    format("Enter Member's shares count:\n"),
-    read(SHARES),
-    LOAN_STATUS is 400,
-    assertz(member(ID, FNAME, LNAME,SHARES, LOAN_STATUS)),
-    add_member.
+    format("Enter member's first name:\n"),
+    read(FName),
+    format("Enter member's  last name:\n"),
+    read(LName),
+    save_member(ID, FName, LName).
 
-show_members:-
-    format("\n\nID_NUMBER\tFIRST_NAME.\tLAST_NAME\tSHARES\tLOAN_STATUS\n"),
-    forall(member(ID, FNAME, LNAME,SHARES, LOAN_STATUS),
-    format("~w\t\t~w\t\t~w\t\t~w\t~w~n", [ID, FNAME, LNAME,SHARES, LOAN_STATUS])).
+% Prints all members in the Sacco
+list_members :-
+    forall(member(ID, _, _), print_member(ID)).
 
-
-search_member:-
+% Read user-input ID, search for that member, and print their details
+search_member :-
     format("\nEnter member's ID Number:\n"),
-    read(X),
-    format("\n\nID_NUMBER\tFIRST_NAME.\tLAST_NAME\tSHARES\tLOAN_STATUS\n"),
-    forall(member(X, FNAME, LNAME,SHARES, LOAN_STATUS),
-    format("~w\t\t~w\t\t~w\t\t~w\t~w~n", [X, FNAME, LNAME,SHARES, LOAN_STATUS])).
+    read(ID),
+    print_member(ID).
 
-members_with_loans:-
-    format("\n\nID_NUMBER\tFIRST_NAME.\tLAST_NAME\tSHARES\tLOAN_STATUS\n"),
-    forall(member(ID, FNAME, LNAME,SHARES, X) X is > 1,
-    format("~w\t\t~w\t\t~w\t\t~w\t~w~n", [ID, FNAME, LNAME,SHARES, LOAN_STATUS])).
+% Print member details
+print_member(OwnerID) :-
+    member(OwnerID, OwnerFName, OwnerLName),
+    setof(RegNo, vehicle:vehicle(OwnerID, RegNo, _, _, _), Vehicles),
+    format("\nMember ID: ~w\nName: ~w ~w\nVehicles Owned: ~w\n", [OwnerID, OwnerFName, OwnerLName, Vehicles]).
 
-
-
+% Read user-input member ID, and delete that member
+delete_member :-
+    format("\nEnter member's ID Number:\n"),
+    read(ID),
+    retract_member(ID, _, _).

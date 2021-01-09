@@ -1,0 +1,4 @@
+created(1608724534.6520853).
+assert(member(234,stephen,mwangi)).
+assert(member(123,jerim,otieno)).
+retract(member(234,stephen,mwangi)).
