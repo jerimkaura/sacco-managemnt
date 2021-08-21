@@ -7,7 +7,7 @@ This project is about a data management system for the information of a medium s
 - Removing a member from the SACCO
 -  Showing the details of a given member
    - Name
-   - Route
+   - Route of operation 
    - Vehicles owned,their driver and routing information
    - Shares
    - Credit Status
