@@ -8,7 +8,7 @@ This project is about a data management system for the information of a medium s
 -  Showing the details of a given member
    - Name
    - Route
-   - Vehicles Owned & their driver and routing information
+   - Vehicles owned,their driver and routing information
    - Shares
    - Credit Status
 - Statistics
